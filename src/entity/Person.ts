@@ -5,20 +5,34 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToMany,
+    Unique,
 } from "typeorm";
-import { MinLength, IsNotEmpty } from "class-validator";
 import { User } from "./User";
+import { IsEmail, IsNotEmpty } from "class-validator";
+import { Store } from "./Store";
 
 @Entity()
+@Unique(["email"])
 export class Person {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
+    @IsNotEmpty()
     name: string;
 
     @Column()
+    @IsNotEmpty()
     lastname: string;
+
+    @Column()
+    @IsNotEmpty()
+    cuit: number;
+
+    @Column()
+    @IsNotEmpty()
+    @IsEmail()
+    email: string;
 
     @OneToMany((type) => User, (user) => user.person)
     users: User[];

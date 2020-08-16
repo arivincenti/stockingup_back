@@ -6,10 +6,12 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     ManyToOne,
+    OneToMany,
 } from "typeorm";
 import { MinLength, IsNotEmpty } from "class-validator";
 import * as bcrypt from "bcryptjs";
 import { Person } from "./Person";
+import { Store } from "./Store";
 //TODO IsEmail validation
 
 @Entity()
@@ -32,6 +34,9 @@ export class User {
     @Column()
     @IsNotEmpty()
     role: string;
+
+    @OneToMany((type) => Store, (store) => store.user)
+    stores: Store[];
 
     @Column()
     @CreateDateColumn()

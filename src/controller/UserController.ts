@@ -1,4 +1,4 @@
-import { getRepository, getManager, getConnection } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 import { Request, Response } from "express";
 import { User } from "../entity/User";
 import { validate } from "class-validator";
@@ -50,6 +50,7 @@ export class UserController {
         const queryRunner = connection.createQueryRunner();
         await queryRunner.connect();
         queryRunner.startTransaction();
+
         try {
             const person: Person = new Person();
             const user: User = new User();
@@ -66,8 +67,6 @@ export class UserController {
             const errors = await validate(user, {
                 validationError: { target: false, value: false },
             });
-
-            console.log("prueba para commit");
 
             if (errors.length) return res.status(400).json({ errors });
 
