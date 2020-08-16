@@ -67,6 +67,8 @@ export class UserController {
                 validationError: { target: false, value: false },
             });
 
+            console.log("prueba para commit");
+
             if (errors.length) return res.status(400).json({ errors });
 
             user.hashPassword();
