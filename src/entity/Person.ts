@@ -6,14 +6,19 @@ import {
     UpdateDateColumn,
     OneToMany,
     Unique,
+    OneToOne,
 } from "typeorm";
 import { User } from "./User";
 import { IsEmail, IsNotEmpty } from "class-validator";
-import { Store } from "./Store";
+import { Client } from "./Client";
+import { Provider } from "./Provider";
 
 @Entity()
 @Unique(["email"])
 export class Person {
+    // ==================================================
+    // Properties
+    // ==================================================
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -44,4 +49,8 @@ export class Person {
     @Column()
     @UpdateDateColumn()
     updated_at: Date;
+
+    // ==================================================
+    // Methods
+    // ==================================================
 }

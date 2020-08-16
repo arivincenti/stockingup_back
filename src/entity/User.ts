@@ -12,11 +12,14 @@ import { MinLength, IsNotEmpty } from "class-validator";
 import * as bcrypt from "bcryptjs";
 import { Person } from "./Person";
 import { Store } from "./Store";
-//TODO IsEmail validation
+import { Employee } from "./Employee";
 
 @Entity()
 @Unique(["username"])
 export class User {
+    // ==================================================
+    // Properties
+    // ==================================================
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -46,6 +49,9 @@ export class User {
     @UpdateDateColumn()
     updated_at: Date;
 
+    // ==================================================
+    // Methods
+    // ==================================================
     hashPassword(): void {
         this.password = bcrypt.hashSync(this.password);
     }
