@@ -1,7 +1,7 @@
 import { getRepository } from "typeorm";
 import { Request, Response } from "express";
 import { User } from "../entity/User";
-import { generateToken } from "../middlewares/jwt";
+import { generateToken } from "../middlewares/authentication";
 
 class AuthController {
     static login = async (req: Request, res: Response) => {

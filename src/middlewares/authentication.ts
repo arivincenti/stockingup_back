@@ -18,7 +18,7 @@ export const generateToken = (user: User) => {
 // Check token
 // ==================================================
 export const checkToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = <string>req.headers["token"];
+    const token: string = <string>req.headers["token"];
     let jwtPayload: any;
     try {
         jwtPayload = jwt.verify(token, config.jwtSecret);
@@ -27,15 +27,5 @@ export const checkToken = (req: Request, res: Response, next: NextFunction) => {
         return res.status(401).send({ message: "Unauthorized" });
     }
 
-    next();
-};
-
-// ==================================================
-// Check role
-// ==================================================
-export const checkRole = (req: Request, res: Response, next: NextFunction) => {
-    const token = <string>req.headers["token"];
-    const jwtPayload: any = jwt.verify(token, config.jwtSecret);
-    console.log(jwtPayload.user);
     next();
 };

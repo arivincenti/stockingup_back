@@ -30,7 +30,7 @@ export class Person {
     @IsNotEmpty()
     lastname: string;
 
-    @Column()
+    @Column({ type: "bigint" })
     @IsNotEmpty()
     cuit: number;
 

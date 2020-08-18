@@ -14,7 +14,7 @@ export class UserController {
             const users: User[] = await userRepository.find({
                 relations: ["person"],
             });
-            res.json({ data: users });
+            res.json({ count: users.length, results: users });
         } catch (error) {
             res.status(500).json({
                 message: "Error al buscar los usuarios",
@@ -31,7 +31,7 @@ export class UserController {
         const userRepository = getRepository(User);
         try {
             const user = await userRepository.findOneOrFail(id);
-            res.json({ data: user });
+            res.json({ results: user });
         } catch (error) {
             res.status(404).json({
                 message: "No se encontró el usuario",
@@ -44,7 +44,15 @@ export class UserController {
     // Create user
     // ==================================================
     static createUser = async (req: Request, res: Response) => {
-        const { name, lastname, username, password, role } = req.body;
+        const {
+            name,
+            lastname,
+            cuit,
+            email,
+            username,
+            password,
+            role,
+        } = req.body;
 
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
@@ -57,30 +65,37 @@ export class UserController {
 
             person.name = name;
             person.lastname = lastname;
-            const personSaved = await queryRunner.manager.save(person);
+            person.cuit = cuit;
+            person.email = email;
+            await queryRunner.manager.save(person);
 
             user.username = username;
             user.password = password;
             user.role = role;
-            user.person = personSaved;
+            user.person = person;
 
             const errors = await validate(user, {
                 validationError: { target: false, value: false },
             });
 
-            if (errors.length) return res.status(400).json({ errors });
+            if (errors.length) {
+                await queryRunner.rollbackTransaction();
+                return res.status(400).json({ errors });
+            }
 
             user.hashPassword();
-            const userSaved = await queryRunner.manager.save(user);
-            res.json({ data: userSaved });
-
+            await queryRunner.manager.save(user);
             await queryRunner.commitTransaction();
+
+            res.json({ results: user });
         } catch (error) {
             await queryRunner.rollbackTransaction();
             res.status(500).json({
                 message: "Error al guardar el usuario",
                 error: error.sqlMessage,
             });
+        } finally {
+            await queryRunner.release();
         }
     };
 
@@ -112,10 +127,10 @@ export class UserController {
         if (errors.length) return res.status(400).json({ errors });
 
         try {
-            let userSaved = await userRepository.save(user);
-            res.json({ data: userSaved });
+            await userRepository.save(user);
+            res.json({ results: user });
         } catch (error) {
-            return res.status(400).json({
+            return res.status(500).json({
                 message: "Error al guardar los datos",
                 error: error.sqlMessage,
             });

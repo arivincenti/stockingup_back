@@ -21,7 +21,9 @@ export class Product {
     @Column()
     product_name: string;
 
-    @ManyToMany((type) => Category, (category) => category.products)
+    @ManyToMany((type) => Category, (category) => category.products, {
+        cascade: true,
+    })
     @JoinTable()
     categories: Category[];
 

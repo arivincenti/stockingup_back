@@ -3,6 +3,9 @@ import { Category } from "../entity/Category";
 import { getRepository } from "typeorm";
 
 class CategoryController {
+    // ==================================================
+    // Get all categories
+    // ==================================================
     static getAll = async (req: Request, res: Response) => {
         const categoryRepository = getRepository(Category);
         try {
@@ -17,7 +20,14 @@ class CategoryController {
         }
     };
 
+    // ==================================================
+    // Get categories by ID
+    // ==================================================
     static getById = async (req: Request, res: Response) => {};
+
+    // ==================================================
+    // Create new category
+    // ==================================================
     static createCategory = async (req: Request, res: Response) => {
         const { categoryName } = req.body;
         const categoryRepository = getRepository(Category);
@@ -34,7 +44,15 @@ class CategoryController {
             });
         }
     };
+
+    // ==================================================
+    // Update category
+    // ==================================================
     static updateCategory = (req: Request, res: Response) => {};
+
+    // ==================================================
+    // Delete category
+    // ==================================================
     static deleteCategory = (req: Request, res: Response) => {};
 }
 
