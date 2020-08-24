@@ -21,6 +21,18 @@ export class Product {
     @Column()
     product_name: string;
 
+    @Column()
+    description: string;
+
+    @Column()
+    price: number;
+
+    @Column()
+    cuantity: number;
+
+    @Column({ type: "bigint" })
+    code: number;
+
     @ManyToMany((type) => Category, (category) => category.products, {
         cascade: true,
     })

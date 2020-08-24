@@ -9,7 +9,7 @@ class CategoryController {
     static getAll = async (req: Request, res: Response) => {
         const categoryRepository = getRepository(Category);
         try {
-            const categories = await categoryRepository.findOneOrFail({
+            const categories = await categoryRepository.find({
                 relations: ["products"],
             });
             res.json({ data: categories });

@@ -23,7 +23,21 @@ export class ProductController {
     // ==================================================
     // Get product by ID
     // ==================================================
-    static getById = async (req: Request, res: Response) => {};
+    static getById = async (req: Request, res: Response) => {
+        const { code } = req.params;
+
+        const productRepository = getRepository(Product);
+        try {
+            const products: Product[] = await productRepository.find({
+                where: { code },
+            });
+            res.json({ count: products.length, results: products });
+        } catch (error) {
+            return res
+                .status(500)
+                .json({ message: "Error al buscar los productos" });
+        }
+    };
     // ==================================================
     // Create new product
     // ==================================================
