@@ -6,8 +6,10 @@ import {
     UpdateDateColumn,
     OneToOne,
     JoinColumn,
+    OneToMany,
 } from "typeorm";
 import { TicketDetail } from "./TicketDetail";
+import { ColumnMetadata } from "typeorm/metadata/ColumnMetadata";
 
 @Entity()
 export class Ticket {
@@ -16,6 +18,13 @@ export class Ticket {
     // ==================================================
     @PrimaryGeneratedColumn()
     id: number;
+
+    @OneToMany((type) => TicketDetail, (ticket_detail) => ticket_detail.ticket)
+    ticket_detail: TicketDetail[];
+
+    @OneToOne((type) => Ticket)
+    @JoinColumn()
+    canceled_ticket: Ticket;
 
     @Column()
     @CreateDateColumn()

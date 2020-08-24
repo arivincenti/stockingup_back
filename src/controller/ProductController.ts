@@ -21,9 +21,9 @@ export class ProductController {
         }
     };
     // ==================================================
-    // Get product by ID
+    // Get product by BarCode
     // ==================================================
-    static getById = async (req: Request, res: Response) => {
+    static getByCode = async (req: Request, res: Response) => {
         const { code } = req.params;
 
         const productRepository = getRepository(Product);
