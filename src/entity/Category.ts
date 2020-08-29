@@ -8,6 +8,7 @@ import {
     JoinTable,
 } from "typeorm";
 import { Product } from "./Product";
+import { Heading } from "./Heading";
 
 @Entity()
 export class Category {
@@ -22,6 +23,9 @@ export class Category {
 
     @ManyToMany((type) => Product, (product) => product.categories)
     products: Product[];
+
+    @ManyToMany((type) => Heading, (heading) => heading.categories)
+    headings: Heading[];
 
     @Column()
     @CreateDateColumn()

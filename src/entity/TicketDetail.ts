@@ -7,6 +7,9 @@ import {
     UpdateDateColumn,
     JoinColumn,
     ManyToOne,
+    ManyToMany,
+    JoinTable,
+    OneToMany,
 } from "typeorm";
 import { Ticket } from "./Ticket";
 import { Product } from "./Product";
@@ -22,9 +25,19 @@ export class TicketDetail {
     @ManyToOne((type) => Ticket, (ticket) => ticket.ticket_detail)
     ticket: Ticket;
 
-    @OneToOne((type) => Product)
-    @JoinColumn()
+    @ManyToOne((type) => Product, (product) => product.ticket_details, {
+        eager: true,
+    })
     product: Product;
+
+    @Column()
+    product_name: string;
+
+    @Column()
+    product_description: string;
+
+    @Column({ type: "bigint" })
+    product_code: number;
 
     @Column()
     price: number;

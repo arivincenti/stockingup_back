@@ -9,7 +9,6 @@ import {
     OneToMany,
 } from "typeorm";
 import { TicketDetail } from "./TicketDetail";
-import { ColumnMetadata } from "typeorm/metadata/ColumnMetadata";
 
 @Entity()
 export class Ticket {
@@ -19,7 +18,13 @@ export class Ticket {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToMany((type) => TicketDetail, (ticket_detail) => ticket_detail.ticket)
+    @OneToMany(
+        (type) => TicketDetail,
+        (ticket_detail) => ticket_detail.ticket,
+        {
+            eager: true,
+        }
+    )
     ticket_detail: TicketDetail[];
 
     @OneToOne((type) => Ticket)

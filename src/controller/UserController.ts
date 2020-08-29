@@ -44,58 +44,32 @@ export class UserController {
     // Create user
     // ==================================================
     static createUser = async (req: Request, res: Response) => {
-        const {
-            name,
-            lastname,
-            cuit,
-            email,
-            username,
-            password,
-            role,
-        } = req.body;
-
-        const connection = getConnection();
-        const queryRunner = connection.createQueryRunner();
-        await queryRunner.connect();
-        queryRunner.startTransaction();
+        const { email, password, role } = req.body;
 
         try {
-            const person: Person = new Person();
+            const userRepository = getRepository(User);
             const user: User = new User();
-
-            person.name = name;
-            person.lastname = lastname;
-            person.cuit = cuit;
-            person.email = email;
-            await queryRunner.manager.save(person);
-
-            user.username = username;
+            user.email = email;
             user.password = password;
             user.role = role;
-            user.person = person;
 
             const errors = await validate(user, {
                 validationError: { target: false, value: false },
             });
 
             if (errors.length) {
-                await queryRunner.rollbackTransaction();
                 return res.status(400).json({ errors });
             }
 
             user.hashPassword();
-            await queryRunner.manager.save(user);
-            await queryRunner.commitTransaction();
+            await userRepository.save(user);
 
             res.json({ results: user });
         } catch (error) {
-            await queryRunner.rollbackTransaction();
             res.status(500).json({
                 message: "Error al guardar el usuario",
                 error: error.sqlMessage,
             });
-        } finally {
-            await queryRunner.release();
         }
     };
 

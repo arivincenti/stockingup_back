@@ -8,7 +8,7 @@ import {
     ManyToOne,
     OneToMany,
 } from "typeorm";
-import { MinLength, IsNotEmpty } from "class-validator";
+import { MinLength, IsNotEmpty, IsEmail } from "class-validator";
 import * as bcrypt from "bcryptjs";
 import { Person } from "./Person";
 import { Store } from "./Store";
@@ -23,12 +23,14 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne((type) => Person, (person) => person.users)
-    person: Person;
-
     @Column()
     @MinLength(6)
     username: string;
+
+    @Column()
+    @IsNotEmpty()
+    @IsEmail()
+    email: string;
 
     @Column()
     @MinLength(6)
@@ -38,7 +40,7 @@ export class User {
     @IsNotEmpty()
     role: string;
 
-    @OneToMany((type) => Store, (store) => store.user)
+    @OneToMany((type) => Store, (store) => store.owner)
     stores: Store[];
 
     @Column()

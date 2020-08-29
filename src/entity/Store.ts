@@ -7,8 +7,13 @@ import {
     JoinTable,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
+    JoinColumn,
 } from "typeorm";
 import { User } from "./User";
+import { Person } from "./Person";
+import { Client } from "./Client";
+import { Provider } from "./Provider";
 
 @Entity()
 export class Store {
@@ -22,7 +27,16 @@ export class Store {
     store_name: string;
 
     @ManyToOne((type) => User, (user) => user.stores)
-    user: User;
+    owner: User;
+
+    @ManyToMany((type) => Person, (person) => person.stores)
+    persons: Person[];
+
+    @OneToMany((type) => Client, (client) => client.store)
+    clients: Client[];
+
+    @OneToMany((type) => Provider, (provider) => provider.store)
+    providers: Provider[];
 
     @Column()
     @CreateDateColumn()

@@ -8,6 +8,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     JoinColumn,
+    ManyToOne,
 } from "typeorm";
 import { Person } from "./Person";
 import { Store } from "./Store";
@@ -24,9 +25,8 @@ export class Client {
     @JoinColumn()
     person: Person;
 
-    @ManyToMany((type) => Store)
-    @JoinTable()
-    stores: Store[];
+    @ManyToOne((type) => Store, (store) => store.clients)
+    store: Store;
 
     @Column()
     @CreateDateColumn()

@@ -9,9 +9,11 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     JoinColumn,
+    ManyToOne,
 } from "typeorm";
 import { Person } from "./Person";
 import { Store } from "./Store";
+import { Product } from "./Product";
 
 @Entity()
 export class Provider {
@@ -25,9 +27,15 @@ export class Provider {
     @JoinColumn()
     person: Person;
 
-    @ManyToMany((type) => Store)
-    @JoinTable()
-    stores: Store[];
+    @ManyToOne((type) => Store, (store) => store.providers, {
+        eager: true,
+    })
+    store: Store;
+
+    @ManyToMany((type) => Product, (product) => product.providers, {
+        eager: true,
+    })
+    products: Product[];
 
     @Column()
     @CreateDateColumn()

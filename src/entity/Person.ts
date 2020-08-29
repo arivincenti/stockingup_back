@@ -4,14 +4,15 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToMany,
     Unique,
+    ManyToMany,
+    OneToMany,
     OneToOne,
+    JoinColumn,
 } from "typeorm";
-import { User } from "./User";
 import { IsEmail, IsNotEmpty } from "class-validator";
+import { Store } from "./Store";
 import { Client } from "./Client";
-import { Provider } from "./Provider";
 
 @Entity()
 @Unique(["email"])
@@ -39,8 +40,12 @@ export class Person {
     @IsEmail()
     email: string;
 
-    @OneToMany((type) => User, (user) => user.person)
-    users: User[];
+    @ManyToMany((type) => Store, (store) => store.persons)
+    stores: Store[];
+
+    @OneToOne((type) => Client, (client) => client.person)
+    @JoinColumn()
+    client: Client;
 
     @Column()
     @CreateDateColumn()
