@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getRepository, getConnection } from "typeorm";
+import { getRepository, getConnection, getManager } from "typeorm";
 import { Ticket } from "../entity/Ticket";
 import { TicketDetail } from "../entity/TicketDetail";
 import { Product } from "../entity/Product";
@@ -36,7 +36,7 @@ export class TicketController {
     // Create new ticket
     // ==================================================
     static createTicket = async (req: Request, res: Response) => {
-        const { products } = req.body;
+        const { cart } = req.body;
 
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
@@ -48,16 +48,30 @@ export class TicketController {
             const ticket = new Ticket();
             await queryRunner.manager.save(ticket);
 
-            for (let i = 0; i < products.length; i++) {
+            for (let i = 0; i < cart.length; i++) {
+                if (cart[i].cuantity > cart[i].product.stock) {
+                    throw Error("No hay stock disponible");
+                }
+
+                //Reducimos el stock del producto
+                await queryRunner.manager.decrement(
+                    Product,
+                    { id: cart[i].product.id },
+                    "stock",
+                    cart[i].cuantity
+                );
+
+                //Generamos el ticket_detail
                 let ticketDetail = new TicketDetail();
                 ticketDetail.ticket = ticket;
-                ticketDetail.product_name = products[i].product_name;
-                ticketDetail.product_description = products[i].description;
-                ticketDetail.product_code = products[i].code;
-                ticketDetail.cuantity = 1;
-                ticketDetail.price = products[i].price;
-                ticketDetail.product = { ...products[i] };
-                ticketDetail.sub_total = products[i].price;
+                ticketDetail.product_name = cart[i].product.product_name;
+                ticketDetail.product_description = cart[i].product.description;
+                ticketDetail.product_code = cart[i].product.code;
+                ticketDetail.cuantity = cart[i].cuantity;
+                ticketDetail.price = cart[i].product.price;
+                ticketDetail.product = { ...cart[i].product };
+                ticketDetail.sub_total =
+                    cart[i].product.price * cart[i].cuantity;
 
                 await queryRunner.manager.save(ticketDetail);
             }
@@ -66,7 +80,10 @@ export class TicketController {
             res.json({ result: ticket });
         } catch (error) {
             await queryRunner.rollbackTransaction();
-            res.status(500).json({ message: "No se pudo generar el ticket" });
+            res.status(500).json({
+                message: "No se pudo generar el ticket",
+                error,
+            });
         } finally {
             await queryRunner.release();
         }

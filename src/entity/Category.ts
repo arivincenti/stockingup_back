@@ -24,7 +24,9 @@ export class Category {
     @ManyToMany((type) => Product, (product) => product.categories)
     products: Product[];
 
-    @ManyToMany((type) => Heading, (heading) => heading.categories)
+    @ManyToMany((type) => Heading, (heading) => heading.categories, {
+        eager: true,
+    })
     headings: Heading[];
 
     @Column()
