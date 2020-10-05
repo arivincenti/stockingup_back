@@ -4,10 +4,12 @@ import { User } from "../entity/User";
 import { generateToken } from "../middlewares/authentication";
 
 class AuthController {
+    // ==================================================
+    // Login
+    // ==================================================
     static login = async (req: Request, res: Response) => {
-        const { username, password } = req.body;
-
-        if (!(username && password)) {
+        const { email, password } = req.body;
+        if (!(email && password)) {
             return res
                 .status(400)
                 .json({ message: "Username & Password are required" });
@@ -16,7 +18,7 @@ class AuthController {
         const userRepository = getRepository(User);
         let user: User;
         try {
-            user = await userRepository.findOneOrFail({ where: { username } });
+            user = await userRepository.findOneOrFail({ where: { email } });
         } catch (error) {
             return res.status(400).json({
                 message: "El usuario o la contraseña son incorrectos",
@@ -31,6 +33,24 @@ class AuthController {
 
         const token = generateToken(user);
         res.status(200).json({ data: user, token });
+    };
+
+    // ==================================================
+    // Check Email
+    // ==================================================
+    static checkEmail = async (req: Request, res: Response) => {
+        const { email } = req.body;
+        const userRepository = getRepository(User);
+
+        try {
+            const user = await userRepository.find({ where: { email: email } });
+            res.json({ resulsts: user });
+        } catch (error) {
+            res.status(404).json({
+                message: "No se encontró el usuario",
+                error: error.sqlMessage,
+            });
+        }
     };
 }
 
