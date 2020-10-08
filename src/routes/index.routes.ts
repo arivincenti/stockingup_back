@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authRouter from "./auth.routes";
+import accountRouter from "./account.routes";
 import userRouter from "./user.routes";
 import categoryRouter from "./category.routes";
 import productRouter from "./product.routes";
@@ -13,7 +13,7 @@ import storeRouter from "./store.routes";
 
 const routes = Router();
 
-routes.use("/auth", authRouter);
+routes.use("/account", accountRouter);
 routes.use("/users", userRouter);
 routes.use("/persons", personRouter);
 routes.use("/employees", employeeRouter);

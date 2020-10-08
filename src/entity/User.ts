@@ -44,6 +44,12 @@ export class User {
     stores: Store[];
 
     @Column()
+    activation_code: string;
+
+    @Column()
+    activated: boolean;
+
+    @Column()
     @CreateDateColumn()
     created_at: Date;
 

@@ -22,9 +22,11 @@
         "express-fileupload": "^1.2.0",
         "jsonwebtoken": "^8.5.1",
         "mysql": "^2.14.1",
+        "node-mailjet": "^3.3.1",
         "reflect-metadata": "^0.1.10",
         "socket.io": "^2.3.0",
-        "typeorm": "0.2.25"
+        "typeorm": "0.2.25",
+        "uuid": "^8.3.1"
     },
     "scripts": {
         "tsc": "tsc",
